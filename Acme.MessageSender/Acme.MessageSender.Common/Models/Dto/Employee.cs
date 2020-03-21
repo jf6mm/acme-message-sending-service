@@ -2,6 +2,7 @@
 
 namespace Acme.MessageSender.Common.Models.Dto
 {
+	[JsonObject]
 	public class Employee
 	{
 		[JsonProperty("id")]

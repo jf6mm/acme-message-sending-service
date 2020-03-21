@@ -3,6 +3,7 @@ using Acme.MessageSender.Core.Interfaces;
 using Acme.MessageSender.Core.Services;
 using Acme.MessageSender.Infrastructure.ApiAgents;
 using Acme.MessageSender.Infrastructure.Email;
+using Acme.MessageSender.Infrastructure.FileSystem;
 using Acme.MessageSender.Infrastructure.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +36,8 @@ namespace Acme.AutoMessageSender.Service
 					services.AddSingleton<IEmployeeApiAgent, EmployeeApiAgent>();
 					services.AddSingleton<IBirthdayMessageSender, BirthdayMessageSender>();
 					services.AddSingleton<IEmailAgent, EmailAgent>();
+					services.AddSingleton<IFileSystemAgent, FileSystemAgent>();
+					services.AddSingleton<IEmailRegisterFileAgent, EmailRegisterFileAgent>();
 				});
 	}
 }
