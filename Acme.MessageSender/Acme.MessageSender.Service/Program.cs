@@ -34,7 +34,8 @@ namespace Acme.AutoMessageSender.Service
 					services.Configure<AppSettings>(hostContext.Configuration.GetSection("AppSettings"));
 
 					services.AddSingleton<IEmployeeApiAgent, EmployeeApiAgent>();
-					services.AddSingleton<IBirthdayMessageSender, BirthdayMessageSender>();
+					services.AddSingleton<IBirthdayNotifier, BirthdayNotifier>();
+					services.AddSingleton<IWorkAnniversaryNotifier, WorkAnniversaryNotifier>();
 					services.AddSingleton<IEmailAgent, EmailAgent>();
 					services.AddSingleton<IFileSystemAgent, FileSystemAgent>();
 					services.AddSingleton<IEmailRegisterFileAgent, EmailRegisterFileAgent>();

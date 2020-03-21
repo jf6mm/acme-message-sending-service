@@ -10,16 +10,21 @@ namespace Acme.AutoMessageSender.Service
 	public class Worker : BackgroundService
 	{
 		private readonly ILogger<Worker> _logger;
-		private readonly IBirthdayMessageSender _birthdayMessageSender;
+		private readonly IBirthdayNotifier _birthdayNotifier;
+		private readonly IWorkAnniversaryNotifier _workAnniversaryNotifier;
 
-		public Worker(ILogger<Worker> logger, IBirthdayMessageSender birthdayMessageSender)
+
+		public Worker(ILogger<Worker> logger, IBirthdayNotifier birthdayNotifier, IWorkAnniversaryNotifier workAnniversaryNotifier)
 		{
 			_logger = logger;
-			_birthdayMessageSender = birthdayMessageSender;
+			_birthdayNotifier = birthdayNotifier;
+			_workAnniversaryNotifier = workAnniversaryNotifier;
 		}
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
+			await _birthdayNotifier.NotifyEmployees();
+
 			while (!stoppingToken.IsCancellationRequested)
 			{
 				_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);

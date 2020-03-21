@@ -43,6 +43,9 @@ namespace Acme.MessageSender.Infrastructure.Email
 			};
 			mailMessage.To.Add(string.Join(',', recipients));
 
+			// Exit method here if Sending Emails is disabled - This is for use during development.
+			if (!_smtpSettings.SendEmailEnabled) return;
+
 			client.Send(mailMessage);
 		}
 	}

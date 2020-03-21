@@ -7,7 +7,7 @@ namespace Acme.MessageSender.Common.Helpers
 	{
         private static DateTime UnixStartDateUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        public static DateTime ConvertFromIsoDateAsLocal(string isoDateString)
+        public static DateTime FromIsoDate(string isoDateString)
 		{
 			return DateTime.Parse(isoDateString, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal);
 		}
@@ -38,11 +38,6 @@ namespace Acme.MessageSender.Common.Helpers
         public static long FromDateTimeToMilliseconds(DateTime datetime)
         {
             return (long)(datetime.ToUniversalTime().Subtract(UnixStartDateUtc)).TotalMilliseconds;
-        }
-
-        public static bool IsSameDate(DateTime dateTime1, DateTime dateTime2)
-        {
-            return dateTime1.Date == dateTime2.Date;
         }
     }
 }
