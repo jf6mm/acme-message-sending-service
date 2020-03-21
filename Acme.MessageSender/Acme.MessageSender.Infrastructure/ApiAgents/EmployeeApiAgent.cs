@@ -1,5 +1,5 @@
-﻿using Acme.MessageSender.Common.Models;
-using Acme.MessageSender.Common.Models.Dto;
+﻿using Acme.MessageSender.Common.Models.Dto;
+using Acme.MessageSender.Common.Models.Settings;
 using Acme.MessageSender.Infrastructure.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
