@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Acme.MessageSender.Core.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -11,12 +10,12 @@ namespace Acme.AutoMessageSender.Service
 	public class Worker : BackgroundService
 	{
 		private readonly ILogger<Worker> _logger;
+		private readonly IBirthdayMessageSender _birthdayMessageSender;
 
-
-
-		public Worker(ILogger<Worker> logger)
+		public Worker(ILogger<Worker> logger, IBirthdayMessageSender birthdayMessageSender)
 		{
 			_logger = logger;
+			_birthdayMessageSender = birthdayMessageSender;
 		}
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
