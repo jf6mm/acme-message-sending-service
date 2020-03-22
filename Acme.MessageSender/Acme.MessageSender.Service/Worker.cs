@@ -27,16 +27,18 @@ namespace Acme.AutoMessageSender.Service
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
+			int millisecondsToDelay = _appSettings.NotificationTaskDelayMinutes * 60 * 1000;
+
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				_logger.LogInformation("Executing notification tasks at: {time}", DateTimeOffset.Now);
+				_logger.LogInformation("Start executing notification tasks");
 
 				try
 				{
 					await _birthdayNotifier.NotifyEmployees();
 					// await _workAnniversaryNotifier.NotifyEmployees(); // TODO: uncomment once implemented.
 
-					_logger.LogInformation("Finished executing notification tasks at: {time}", DateTimeOffset.Now);
+					_logger.LogInformation("Finished executing notification tasks");
 				}
 				catch (Exception ex)
 				{
@@ -44,7 +46,6 @@ namespace Acme.AutoMessageSender.Service
 				}
 
 				// Sleep for configured period
-				int millisecondsToDelay = _appSettings.NotificationTaskDelayMinutes * 60 * 1000;
 				await Task.Delay(millisecondsToDelay, stoppingToken);
 			}
 		}
