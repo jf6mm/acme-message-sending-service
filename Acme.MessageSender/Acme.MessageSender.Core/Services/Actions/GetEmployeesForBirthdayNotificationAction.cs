@@ -1,8 +1,10 @@
-﻿using Acme.MessageSender.Common.Models;
+﻿using Acme.MessageSender.Common.Caching;
+using Acme.MessageSender.Common.Models;
 using Acme.MessageSender.Common.Models.Dto;
 using Acme.MessageSender.Core.Interfaces;
 using Acme.MessageSender.Infrastructure.Interfaces;
 using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,26 +13,33 @@ namespace Acme.MessageSender.Core.Services.Actions
 {
 	public class GetEmployeesForBirthdayNotificationAction
 	{
+		private const string EmployeesCacheKey = "EmployeeApi_AllEmployees";
+		private const string ExcludedEmployeesCacheKey = "EmployeeApi_ExcludedEmployees";
+		private TimeSpan EmployeeApiCacheTime = new TimeSpan(1, 0, 0);
+
 		private readonly IEmployeeApiAgent _employeeApiAgent;
 		private readonly IEmailRegisterFileAgent _emailRegisterFileAgent;
 		private readonly IEmployeeDateCalculator _employeeDateCalculator;
 		private readonly IMapper _mapper;
+		private readonly ICacheStore _cacheStore;
 
 		public GetEmployeesForBirthdayNotificationAction(IEmployeeApiAgent employeeApiAgent,
 			IEmailRegisterFileAgent emailRegisterFileAgent,
 			IEmployeeDateCalculator employeeDateCalculator,
-			IMapper mapper)
+			IMapper mapper,
+			ICacheStore cacheStore)
 		{
 			_employeeApiAgent = employeeApiAgent;
 			_emailRegisterFileAgent = emailRegisterFileAgent;
 			_employeeDateCalculator = employeeDateCalculator;
 			_mapper = mapper;
+			_cacheStore = cacheStore;
 		}
 
 		public async Task<IList<Employee>> Invoke()
 		{
-			var allEmployees = _mapper.Map<IList<EmployeeDto>, IList<Employee>>(await _employeeApiAgent.GetAllEmployees());
-			var excludedEmployeeIds = await _employeeApiAgent.GetBirthdayListExclusionIds();
+			var allEmployees = await GetAllEmployees();
+			var excludedEmployeeIds = await GetEmployeeExclusionList();
 			SentEmailRegister sentEmailRegisterToday = _emailRegisterFileAgent.GetEmailRegisterDataForToday();
 
 			// Filter list to employees who should be notified today
@@ -42,5 +51,29 @@ namespace Acme.MessageSender.Core.Services.Actions
 
 			return employeesToNotifyToday.ToList();
 		}
+
+		#region Private Methods
+
+		private async Task<IList<Employee>> GetAllEmployees()
+		{
+			var employeesFromCache = _cacheStore.Get<IList<Employee>>(EmployeesCacheKey);
+			if (employeesFromCache != null) return employeesFromCache;
+
+			var employeesFromApi = _mapper.Map<IList<EmployeeDto>, IList<Employee>>(await _employeeApiAgent.GetAllEmployees());
+			_cacheStore.Add(EmployeesCacheKey, employeesFromApi, EmployeeApiCacheTime);
+			return employeesFromApi;
+		}
+
+		private async Task<IList<int>> GetEmployeeExclusionList()
+		{
+			var exclusionListFromCache = _cacheStore.Get<IList<int>>(ExcludedEmployeesCacheKey);
+			if (exclusionListFromCache != null) return exclusionListFromCache;
+
+			var exclusionListFromApi = await _employeeApiAgent.GetBirthdayListExclusionIds();
+			_cacheStore.Add(ExcludedEmployeesCacheKey, exclusionListFromApi, EmployeeApiCacheTime);
+			return exclusionListFromApi;
+		}
+
+		#endregion
 	}
 }

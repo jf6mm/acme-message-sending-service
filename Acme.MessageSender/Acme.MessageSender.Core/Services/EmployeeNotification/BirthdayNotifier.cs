@@ -1,4 +1,5 @@
-﻿using Acme.MessageSender.Common.Models;
+﻿using Acme.MessageSender.Common.Caching;
+using Acme.MessageSender.Common.Models;
 using Acme.MessageSender.Common.Models.Settings;
 using Acme.MessageSender.Core.Interfaces;
 using Acme.MessageSender.Core.Services.Actions;
@@ -19,6 +20,7 @@ namespace Acme.MessageSender.Core.Services.EmployeeNotification
 		private readonly IEmployeeDateCalculator _employeeDateCalculator;
 		private readonly BirthdayEmailSettings _birthdayEmailSettings;
 		private readonly IMapper _mapper;
+		private readonly ICacheStore _cacheStore;
 
 		public BirthdayNotifier(IEmployeeApiAgent employeeApiAgent,
 			IEmailRegisterFileAgent emailRegisterFileAgent,
@@ -26,7 +28,8 @@ namespace Acme.MessageSender.Core.Services.EmployeeNotification
 			IEmployeeDateCalculator employeeDateCalculator,
 			IOptions<AppSettings> appSettings,
 			ILogger<BirthdayNotifier> logger,
-			IMapper mapper)
+			IMapper mapper,
+			ICacheStore cacheStore)
 			: base(logger)
 		{
 			_employeeApiAgent = employeeApiAgent;
@@ -35,13 +38,15 @@ namespace Acme.MessageSender.Core.Services.EmployeeNotification
 			_employeeDateCalculator = employeeDateCalculator;
 			_birthdayEmailSettings = appSettings.Value.BirthdayEmailSettings;
 			_mapper = mapper;
+			_cacheStore = cacheStore;
 		}
 		protected override async Task<IList<Employee>> GetEmployeesToNotify()
 		{
 			var action = new GetEmployeesForBirthdayNotificationAction(_employeeApiAgent,
 				_emailRegisterFileAgent,
 				_employeeDateCalculator,
-				_mapper);
+				_mapper,
+				_cacheStore);
 
 			return await action.Invoke();
 		}

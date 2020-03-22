@@ -1,3 +1,4 @@
+using Acme.MessageSender.Common.Caching;
 using Acme.MessageSender.Common.Models.Mapping;
 using Acme.MessageSender.Common.Models.Settings;
 using Acme.MessageSender.Core.Interfaces;
@@ -33,6 +34,7 @@ namespace Acme.AutoMessageSender.Service
 				.ConfigureServices((hostContext, services) =>
 				{
 					services.AddHostedService<Worker>();
+					services.AddMemoryCache();
 
 					services.Configure<AppSettings>(hostContext.Configuration.GetSection("AppSettings"));
 
@@ -44,6 +46,7 @@ namespace Acme.AutoMessageSender.Service
 					services.AddSingleton<IEmailRegisterFileAgent, EmailRegisterFileAgent>();
 					services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 					services.AddSingleton<IEmployeeDateCalculator, EmployeeDateCalculator>();
+					services.AddSingleton<ICacheStore, MemoryCacheStore>();
 
 					var mappingConfig = ModelConfiguration.CreateMapperConfiguration();
 					IMapper mapper = mappingConfig.CreateMapper();
