@@ -46,7 +46,8 @@ namespace Acme.MessageSender.Core.Services.EmployeeNotification
 				_emailRegisterFileAgent,
 				_employeeDateCalculator,
 				_mapper,
-				_cacheStore);
+				_cacheStore,
+				_logger);
 
 			return await action.Invoke();
 		}
