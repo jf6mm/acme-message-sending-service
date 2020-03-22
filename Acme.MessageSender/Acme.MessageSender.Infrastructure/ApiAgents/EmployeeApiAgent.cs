@@ -19,10 +19,10 @@ namespace Acme.MessageSender.Infrastructure.ApiAgents
 		{
 		}
 
-		public async Task<IList<Employee>> GetAllEmployees()
+		public async Task<IList<EmployeeDto>> GetAllEmployees()
 		{
 			var response = await GetAsync(EmployeesApiPath);
-			var employees = JsonConvert.DeserializeObject<IList<Employee>>(response.Content);
+			var employees = JsonConvert.DeserializeObject<IList<EmployeeDto>>(response.Content);
 			return employees;
 		}
 

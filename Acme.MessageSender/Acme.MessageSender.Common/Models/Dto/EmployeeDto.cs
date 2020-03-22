@@ -3,7 +3,7 @@
 namespace Acme.MessageSender.Common.Models.Dto
 {
 	[JsonObject]
-	public class Employee
+	public class EmployeeDto
 	{
 		[JsonProperty("id")]
 		public int Id { get; set; }

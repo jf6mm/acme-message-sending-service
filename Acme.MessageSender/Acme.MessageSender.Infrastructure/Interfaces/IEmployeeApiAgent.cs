@@ -6,7 +6,7 @@ namespace Acme.MessageSender.Infrastructure.Interfaces
 {
 	public interface IEmployeeApiAgent
 	{
-		Task<IList<Employee>> GetAllEmployees();
+		Task<IList<EmployeeDto>> GetAllEmployees();
 
 		Task<IList<int>> GetBirthdayListExclusionIds();
 	}

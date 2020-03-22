@@ -2,8 +2,8 @@
 
 namespace Acme.MessageSender.Core.Interfaces
 {
-	public interface IBirthdayMessageSender
+	public interface IEmployeeNotifier
 	{
-		Task SendBirthdayMessages();
+		Task NotifyEmployees();
 	}
 }
