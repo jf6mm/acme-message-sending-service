@@ -35,13 +35,18 @@ namespace Acme.MessageSender.Infrastructure.Email
 
 			MailMessage mailMessage = new MailMessage
 			{
-				From = new MailAddress("no-reply@acme.com"),	
+				From = new MailAddress("no-reply@acme.com"),
 				Body = content,
 				IsBodyHtml = false,
 				Subject = subject,
 				BodyEncoding = Encoding.UTF8
 			};
-			mailMessage.To.Add(string.Join(',', recipients));
+
+			foreach(var address in recipients)
+			{
+				if (string.IsNullOrEmpty(address)) continue;
+				mailMessage.To.Add(new MailAddress(address));
+			}
 
 			// Exit method here if Sending Emails is disabled - This is for use during development.
 			if (!_smtpSettings.SendEmailEnabled) return;

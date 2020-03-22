@@ -1,10 +1,10 @@
-﻿using Acme.MessageSender.Common.Models.Dto;
+﻿using Acme.MessageSender.Common.Models;
 using Acme.MessageSender.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Acme.MessageSender.Core.Services
+namespace Acme.MessageSender.Core.Services.EmployeeNotification
 {
 	public class WorkAnniversaryNotifier : EmployeeNotifierBase, IWorkAnniversaryNotifier
 	{
@@ -13,7 +13,7 @@ namespace Acme.MessageSender.Core.Services
 		{
 		}
 
-		protected override void FlagNotificationAsSent(Employee employee)
+		protected override void FlagNotificationAsSent(List<int> employeeIds)
 		{
 			throw new System.NotImplementedException();
 		}

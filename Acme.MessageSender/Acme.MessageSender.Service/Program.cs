@@ -1,10 +1,13 @@
+using Acme.MessageSender.Common.Models.Mapping;
 using Acme.MessageSender.Common.Models.Settings;
 using Acme.MessageSender.Core.Interfaces;
 using Acme.MessageSender.Core.Services;
+using Acme.MessageSender.Core.Services.EmployeeNotification;
 using Acme.MessageSender.Infrastructure.ApiAgents;
 using Acme.MessageSender.Infrastructure.Email;
 using Acme.MessageSender.Infrastructure.FileSystem;
 using Acme.MessageSender.Infrastructure.Interfaces;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -39,6 +42,12 @@ namespace Acme.AutoMessageSender.Service
 					services.AddSingleton<IEmailAgent, EmailAgent>();
 					services.AddSingleton<IFileSystemAgent, FileSystemAgent>();
 					services.AddSingleton<IEmailRegisterFileAgent, EmailRegisterFileAgent>();
+					services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+					services.AddSingleton<IEmployeeDateCalculator, EmployeeDateCalculator>();
+
+					var mappingConfig = ModelConfiguration.CreateMapperConfiguration();
+					IMapper mapper = mappingConfig.CreateMapper();
+					services.AddSingleton(mapper);
 				});
 	}
 }

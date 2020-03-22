@@ -1,11 +1,13 @@
-﻿using Acme.MessageSender.Common.Models.Dto;
+﻿using Acme.MessageSender.Common.Models;
+using Acme.MessageSender.Common.Models.Dto;
 using Acme.MessageSender.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Acme.MessageSender.Core.Services
+namespace Acme.MessageSender.Core.Services.EmployeeNotification
 {
 	public abstract class EmployeeNotifierBase : IEmployeeNotifier
 	{
@@ -18,24 +20,29 @@ namespace Acme.MessageSender.Core.Services
 
 		public async Task NotifyEmployees()
 		{
-			foreach (var employee in await GetEmployeesToNotify())
+			var employeesToNotify = await GetEmployeesToNotify();
+			List<int> employeeIdsToFlagAsSent = new List<int>();
+
+			foreach (var employee in employeesToNotify)
 			{
 				try
 				{
 					SendNotificationToEmployee(employee);
-					FlagNotificationAsSent(employee);
+					employeeIdsToFlagAsSent.Add(employee.Id);
 				}
 				catch (Exception ex)
 				{
 					_logger.LogError(ex, $"Error while notifying employee with ID: \"{employee.Id}\"");
 				}
 			}
+
+			FlagNotificationAsSent(employeeIdsToFlagAsSent);
 		}
 
 		protected abstract Task<IList<Employee>> GetEmployeesToNotify();
 
 		protected abstract void SendNotificationToEmployee(Employee employee);
 
-		protected abstract void FlagNotificationAsSent(Employee employee);
+		protected abstract void FlagNotificationAsSent(List<int> employeeIds);
 	}
 }
