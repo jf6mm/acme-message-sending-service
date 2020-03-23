@@ -1,9 +1,11 @@
-﻿using Acme.MessageSender.Common.Models;
+﻿using Acme.MessageSender.Common.Caching;
+using Acme.MessageSender.Common.Models;
 using Acme.MessageSender.Common.Models.Dto;
 using Acme.MessageSender.Common.Models.Mapping;
 using Acme.MessageSender.Core.Interfaces;
 using Acme.MessageSender.Core.Services.Actions;
 using Acme.MessageSender.Infrastructure.Interfaces;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -17,6 +19,8 @@ namespace Acme.MessageSender.Test.Core.Services.Actions
 		private Mock<IEmployeeApiAgent> _employeeApiAgent;
 		private Mock<IEmailRegisterFileAgent> _emailRegisterFileAgent;
 		private Mock<IEmployeeDateCalculator> _employeeDateCalculator;
+		private Mock<ICacheStore> _cacheStore;
+		private Mock<ILogger> _logger;
 
 		private List<EmployeeDto> _allEmployees = new List<EmployeeDto>
 		{
@@ -29,6 +33,8 @@ namespace Acme.MessageSender.Test.Core.Services.Actions
 			_emailRegisterFileAgent = new Mock<IEmailRegisterFileAgent>();
 			_employeeApiAgent = new Mock<IEmployeeApiAgent>();
 			_employeeDateCalculator = new Mock<IEmployeeDateCalculator>();
+			_cacheStore = new Mock<ICacheStore>();
+			_logger = new Mock<ILogger>();
 		}
 
 		[TestMethod]
@@ -136,7 +142,9 @@ namespace Acme.MessageSender.Test.Core.Services.Actions
 			return new GetEmployeesForBirthdayNotificationAction(_employeeApiAgent.Object,
 				_emailRegisterFileAgent.Object,
 				_employeeDateCalculator.Object,
-				ModelConfiguration.CreateMapperConfiguration().CreateMapper());
+				ModelConfiguration.CreateMapperConfiguration().CreateMapper(),
+				_cacheStore.Object,
+				_logger.Object);
 		}
 	}
 }
